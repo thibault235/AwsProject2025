@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "eu-west-3"  # Remplace par ta région AWS
+  region = "eu-west-3"
 }
 
-# Clé SSH unique pour les instances
+# Clé SSH INSTANCES
 resource "aws_key_pair" "my_key_pair" {
-  public_key = file("/home/dark/.ssh/id_rsa.pub")  # Chemin absolu vers ta clé publique
+  public_key = file("/home/dark/.ssh/id_rsa.pub")  # Chemin absolu vers clé publique
 }
 
 # VPC
@@ -12,7 +12,7 @@ resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
 }
 
-# Sous-réseau pour le backend
+# Sous réseau backend
 resource "aws_subnet" "my_backend_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -20,7 +20,7 @@ resource "aws_subnet" "my_backend_subnet" {
   map_public_ip_on_launch = true
 }
 
-# Sous-réseau pour le frontend
+# Sous réseau frontend
 resource "aws_subnet" "my_frontend_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.2.0/24"
@@ -28,7 +28,7 @@ resource "aws_subnet" "my_frontend_subnet" {
   map_public_ip_on_launch = true
 }
 
-# Groupe de sécurité pour les instances et RDS
+# Groupe de sécurité instances et RDS
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2-security-group"
   description = "Security group pour instances EC2 et RDS"
@@ -58,7 +58,7 @@ resource "aws_security_group" "ec2_sg" {
 
 # Instance Backend
 resource "aws_instance" "backend" {
-  ami           = "ami-0f538382b0c516a7c"  # AMI Amazon Linux 2 (remplace si besoin)
+  ami           = "ami-0f538382b0c516a7c"  # AMI Amazon Linux 2
   instance_type = "t2.micro"
   key_name      = aws_key_pair.my_key_pair.key_name
   subnet_id     = aws_subnet.my_backend_subnet.id
@@ -79,7 +79,7 @@ resource "aws_instance" "backend" {
 
 # Instance Frontend
 resource "aws_instance" "frontend" {
-  ami           = "ami-0f538382b0c516a7c"  # AMI Amazon Linux 2 (remplace si besoin)
+  ami           = "ami-0f538382b0c516a7c"  # AMI Amazon Linux 2
   instance_type = "t2.micro"
   key_name      = aws_key_pair.my_key_pair.key_name
   subnet_id     = aws_subnet.my_frontend_subnet.id
@@ -98,7 +98,7 @@ resource "aws_instance" "frontend" {
   }
 }
 
-# Groupe de sous-réseaux pour la base de données
+# Groupe sous-réseaux BDD
 resource "aws_db_subnet_group" "my_db_subnet_group" {
   name       = "my-db-subnet-group"
   subnet_ids = [aws_subnet.my_backend_subnet.id, aws_subnet.my_frontend_subnet.id]
@@ -126,7 +126,7 @@ resource "aws_db_instance" "my_db" {
   }
 }
 
-# Bucket S3 pour le backend
+# Bucket S3 backend
 resource "aws_s3_bucket" "backend_bucket" {
   bucket = "mon-bucket-test-terraform-unique-125946135"
   tags = {
