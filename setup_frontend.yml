@@ -1,0 +1,24 @@
+---
+- name: Setup Frontend Server
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt repository
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy frontend code
+      copy:
+        src: "/path/to/your/frontend/files"
+        dest: "/var/www/html"

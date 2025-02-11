@@ -1,0 +1,33 @@
+---
+- name: Setup Backend Server
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt repository
+      apt:
+        update_cache: yes
+
+    - name: Install Python 3 and pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Install application dependencies
+      pip:
+        name:
+          - flask
+          - gunicorn
+        state: present
